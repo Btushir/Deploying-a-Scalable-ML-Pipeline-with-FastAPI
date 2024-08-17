@@ -3,14 +3,12 @@ import json
 import requests
 
 # TODO: send a GET using the URL http://127.0.0.1:8000
-r = # Your code here
+r = requests.get("http://127.0.0.1:8000")  # Your code here
 
 # TODO: print the status code
-# print()
+print(r.status_code)
 # TODO: print the welcome message
-# print()
-
-
+print(f"the welcome message is: {r.text}")
 
 data = {
     "age": 37,
@@ -30,9 +28,9 @@ data = {
 }
 
 # TODO: send a POST using the data above
-r = # Your code here
+r = requests.post(url="http://127.0.0.1:8000", data=data)  # Your code here
 
 # TODO: print the status code
-# print()
+print(f"the status of request command is: {r.status_code}")
 # TODO: print the result
-# print()
+print(f"the output of ML model is {r.content}")

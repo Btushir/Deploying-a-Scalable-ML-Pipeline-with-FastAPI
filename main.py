@@ -7,6 +7,7 @@ from pydantic import BaseModel, Field
 from ml.data import apply_label, process_data
 from ml.model import inference, load_model
 
+
 # DO NOT MODIFY
 class Data(BaseModel):
     age: int = Field(..., example=37)
@@ -26,25 +27,29 @@ class Data(BaseModel):
     hours_per_week: int = Field(..., example=40, alias="hours-per-week")
     native_country: str = Field(..., example="United-States", alias="native-country")
 
-path = # TODO: enter the path for the saved encoder 
+
+path = "./model/encoder.pkl"  # TODO: enter the path for the saved encoder
 encoder = load_model(path)
 
-path = # TODO: enter the path for the saved model 
+path = "./model/model.pkl"  # TODO: enter the path for the saved model
 model = load_model(path)
 
 # TODO: create a RESTful API using FastAPI
-app = # your code here
+app = FastAPI()  # your code here
+
 
 # TODO: create a GET on the root giving a welcome message
 @app.get("/")
+# This decorator tells the API that the get_root() function should handle GET request to root URL("/")
 async def get_root():
     """ Say hello!"""
     # your code here
-    pass
+    return {"Welcome to ML model that predicts whether a person makes over 50K a year."}
 
 
 # TODO: create a POST on a different path that does model inference
 @app.post("/data/")
+# This decorator tells the API that post_inference() function handles the post request to URL ("/data")
 async def post_inference(data: Data):
     # DO NOT MODIFY: turn the Pydantic model into a dict.
     data_dict = data.dict()
@@ -69,6 +74,10 @@ async def post_inference(data: Data):
         # use data as data input
         # use training = False
         # do not need to pass lb as input
+        data,
+        categorical_features=cat_features,
+        encoder=encoder,
+        training=False,
     )
-    _inference = # your code here to predict the result using data_processed
+    _inference = model.predict(data_processed)  # your code here to predict the result using data_processed
     return {"result": apply_label(_inference)}

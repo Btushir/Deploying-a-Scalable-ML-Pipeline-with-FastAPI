@@ -3,8 +3,8 @@ from sklearn.preprocessing import LabelBinarizer, OneHotEncoder
 
 
 def process_data(
-    X, categorical_features=[], label=None, training=True, encoder=None, lb=None
-):
+        X: object, categorical_features=None, label: object = None, training: object = None, encoder: object = None, lb: object = None
+) -> object:
     """ Process the data used in the machine learning pipeline.
 
     Processes the data using one hot encoding for the categorical features and a
@@ -30,6 +30,10 @@ def process_data(
     lb : sklearn.preprocessing._label.LabelBinarizer
         Trained sklearn LabelBinarizer, only used if training=False.
 
+    Parameters
+    ----------
+    label : object
+
     Returns
     -------
     X : np.array
@@ -44,6 +48,8 @@ def process_data(
         passed in.
     """
 
+    if categorical_features is None:
+        categorical_features = []
     if label is not None:
         y = X[label]
         X = X.drop([label], axis=1)
@@ -54,7 +60,7 @@ def process_data(
     X_continuous = X.drop(*[categorical_features], axis=1)
 
     if training is True:
-        encoder = OneHotEncoder(sparse=False, handle_unknown="ignore")
+        encoder = OneHotEncoder(sparse_output=False, handle_unknown="ignore")
         lb = LabelBinarizer()
         X_categorical = encoder.fit_transform(X_categorical)
         y = lb.fit_transform(y.values).ravel()
@@ -75,3 +81,4 @@ def apply_label(inference):
         return ">50K"
     elif inference[0] == 0:
         return "<=50K"
+
