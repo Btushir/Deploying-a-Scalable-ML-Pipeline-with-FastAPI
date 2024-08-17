@@ -25,4 +25,3 @@ F1: 0.7155
 ## Ethical Considerations
 
 ## Caveats and Recommendations
-The model 
