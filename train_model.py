@@ -22,7 +22,7 @@ data = pd.read_csv(data_path)
 # Optional enhancement, use K-fold cross validation instead of a train-test split.
 train, test = train_test_split(data, test_size=0.2)
 #train, val = train_test_split(train, test_size = 0.2)
-
+print(train.shape, test.shape)
 # DO NOT MODIFY
 cat_features = [
     "workclass",
@@ -60,10 +60,13 @@ model = train_model(X_train, y_train)  # your code here
 # save the model and the encoder
 model_path = os.path.join(project_path, "model", "model.pkl")
 save_model(model, model_path)
+print(f"Model saved to {model_path}")
 encoder_path = os.path.join(project_path, "model", "encoder.pkl")
 save_model(encoder, encoder_path)
+print(f"Model saved to {encoder_path}")
 
 # load the model
+print(f"Loading model from {model_path}")
 model = load_model(
     model_path
 )
@@ -76,18 +79,22 @@ p, r, fb = compute_model_metrics(y_test, preds)
 print(f"Precision: {p:.4f} | Recall: {r:.4f} | F1: {fb:.4f}")
 
 # TODO: compute the performance on model slices using the performance_on_categorical_slice function
-label = "salary"
 # iterate through the categorical features
-# for col in cat_features:
-#     # iterate through the unique values in one categorical feature
-#     for slicevalue in sorted(test[col].unique()):
-#         count = test[test[col] == slicevalue].shape[0]
-#         print(col, slicevalue)
-#         p, r, fb = performance_on_categorical_slice(
-#             # your code here
-#             test, col, slicevalue, cat_features, label, encoder, lb, model
-#             # use test, col and slicevalue as part of the input
-#         )
-#         with open("slice_output.txt", "a") as f:
-#             print(f"{col}: {slicevalue}, Count: {count:,}", file=f)
-#             print(f"Precision: {p:.4f} | Recall: {r:.4f} | F1: {fb:.4f}", file=f)
+label = "salary"
+# print("cat_features", cat_features)
+
+for col in cat_features:
+    # print("sorted",sorted(test[col].unique()))
+    # iterate through the unique values in one categorical feature
+    for slicevalue in sorted(test[col].unique()):
+        count = test[test[col] == slicevalue].shape[0]
+        data = test[test[col] == slicevalue]
+        # print(data)
+        p, r, fb = performance_on_categorical_slice(
+            test, col, slicevalue, cat_features, label, encoder, lb, model
+            # your code here
+            # use test, col and slicevalue as part of the input
+        )
+        with open("slice_output.txt", "a") as f:
+            print(f"{col}: {slicevalue}, Count: {count:,}", file=f)
+            print(f"Precision: {p:.4f} | Recall: {r:.4f} | F1: {fb:.4f}", file=f)
